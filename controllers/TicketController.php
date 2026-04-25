@@ -2,6 +2,7 @@
 require_once "models/TicketModelo.php";
 require_once "models/CategoriaModelo.php";
 require_once "models/EstadoModelo.php";
+require_once "models/ComentarioModelo.php";
 
 class TicketController {
 
@@ -53,5 +54,15 @@ class TicketController {
         $modelo->eliminar($_GET['id']);
 
         header("Location: index.php");
+    }
+
+    public function ver() {
+        $modelo = new TicketModelo();
+        $comentarioModelo = new ComentarioModelo();
+    
+        $ticket = $modelo->obtenerPorId($_GET['id']);
+        $comentarios = $comentarioModelo->obtenerPorTicket($_GET['id']);
+    
+        require "views/tickets/ver.php";
     }
 }
