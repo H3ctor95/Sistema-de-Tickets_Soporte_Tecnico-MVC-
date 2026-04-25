@@ -1,5 +1,7 @@
 <?php
 require_once "models/TicketModelo.php";
+require_once "models/CategoriaModelo.php";
+require_once "models/EstadoModelo.php";
 
 class TicketController {
 
@@ -11,6 +13,12 @@ class TicketController {
     }
 
     public function crear() {
+
+        $catmodelo = new CategoriaModelo();
+        $estModelo = new EstadoModelo();
+
+        $categorias = $catmodelo->obtenerTodas();
+        $estados = $estModelo->obtenerTodos();
 
         if ($_POST) {
             $modelo = new TicketModelo();
@@ -24,6 +32,12 @@ class TicketController {
 
     public function editar() {
         $modelo = new TicketModelo();
+        
+        $catModelo = new CategoriaModelo();
+        $estModelo = new EstadoModelo();
+
+        $categorias = $catModelo->obtenerTodas();
+        $estados = $estModelo->obtenerTodos();
 
         if ($_POST) {
             $modelo->actualizar($_GET['id'], $_POST);

@@ -18,9 +18,11 @@ class TicketModelo {
 
         $titulo = $datos['titulo'];
         $descripcion = $datos['descripcion'];
+        $categoria_id = $datos['categoria_id'];
+        $estado =$datos['estado_id'];
 
-        $sql = "INSERT INTO tickets (titulo, descripcion, estado_id) 
-                VALUES ('$titulo', '$descripcion', 1)";
+        $sql = "INSERT INTO tickets (titulo, descripcion, categoria_id, estado_id) 
+                VALUES ('$titulo', '$descripcion', '$categoria_id', '$estado')";
 
         return $db->query($sql);
     }
@@ -30,10 +32,15 @@ class TicketModelo {
 
         $titulo = $datos['titulo'];
         $descripcion = $datos['descripcion'];
+        $categoria_id = $datos['categoria_id'];
+        $estado =$datos['estado_id'];
 
         $sql = "UPDATE tickets 
-                SET titulo='$titulo', descripcion='$descripcion' 
-                WHERE id=$id";
+        SET titulo='$titulo', 
+            descripcion='$descripcion',
+            categoria_id=$categoria,
+            estado_id=$estado
+        WHERE id=$id";
 
         return $db->query($sql);
     }
