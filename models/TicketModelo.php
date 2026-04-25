@@ -5,7 +5,15 @@ class TicketModelo {
 
     public function obtenerTodos() {
         $db = Conexion::conectar();
-        return $db->query("SELECT * FROM tickets");
+    
+        $sql = "SELECT t.*, 
+                       c.nombre AS categoria_nombre,
+                       e.nombre AS estado_nombre
+                FROM tickets t
+                LEFT JOIN ticket_categorias c ON t.categoria_id = c.id
+                LEFT JOIN ticket_estados e ON t.estado_id = e.id";
+    
+        return $db->query($sql);
     }
 
     public function obtenerPorId($id) {
