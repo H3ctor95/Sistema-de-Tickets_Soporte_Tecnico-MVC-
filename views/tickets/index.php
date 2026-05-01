@@ -1,13 +1,5 @@
 <h1>Tickets</h1>
 
-<a href="index.php?controller=ticket&action=crear">Nuevo Ticket</a>
-
-<table border="1">
-<tr>
-    <th>ID</th>
-    <th>Título</th>
-    <th>Acciones</th>
-    <h1>Tickets</h1>
 
 <a href="index.php?controller=ticket&action=crear">Nuevo Ticket</a>
 
