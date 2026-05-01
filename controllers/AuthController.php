@@ -1,35 +1,36 @@
 <?php
-require_once "models/UsuarioMOdelo.php";
+require_once "models/UsuarioModelo.php";
 
 class AuthController {
 
     public function login() {
-        if ($_post) {
+
+        if ($_POST) {
             $modelo = new UsuarioModelo();
 
-            $email = $_post['email'];
-            $pass = $_post['contraseña'];
+            $email = $_POST['email'];
+            $pass = $_POST['contrasena'];
 
             $usuario = $modelo->login($email, $pass);
 
             if ($usuario) {
                 session_start();
 
-                $_session['usuario'] = $usuario;
+                $_SESSION['usuario'] = $usuario;
 
-                header("location: index.php");
+                header("Location: index.php");
             } else {
-                echo "credenciales incorrectas";
+                echo "Credenciales incorrectas";
             }
-            require_once "views/auth/login.php";
         }
 
+        require "views/auth/login.php";
+    }
 
-        public function logout() {
-            session_start();
-            session_destroy();
+    public function logout() {
+        session_start();
+        session_destroy();
 
-            header("location: index.php");
-        }
+        header("Location: index.php");
     }
 }

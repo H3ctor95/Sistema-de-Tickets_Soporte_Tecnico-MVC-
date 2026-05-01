@@ -3,10 +3,11 @@ require_once "config/conexion.php";
 
 class UsuarioModelo {
 
-    public function login($email, $password) {
+    public function login($email, $contrasena) {
         $db = Conexion::conectar();
 
-        $sql = "select * from  usuarios where email='$enamil' and contrasena='$password'";
+        $sql = "SELECT * FROM usuarios 
+                WHERE email='$email' AND contrasena='$contrasena'";
 
         return $db->query($sql)->fetch_object();
     }
