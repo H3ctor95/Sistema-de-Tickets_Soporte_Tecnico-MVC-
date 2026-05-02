@@ -17,6 +17,10 @@ class Conexion {
             die("Error de conexión: " . $conexion->connect_error);
         }
 
+        if (!$conexion->set_charset('utf8mb4')) {
+            $conexion->set_charset('utf8');
+        }
+
         return $conexion;
     }
 }

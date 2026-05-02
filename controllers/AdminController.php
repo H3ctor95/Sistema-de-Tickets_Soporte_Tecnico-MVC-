@@ -6,7 +6,6 @@ require_once "config/auth.php";
 class AdminController {
 
     public function __construct() {
-        session_start();
 
         if (!isset($_SESSION['usuario'])) {
             header("Location: index.php");

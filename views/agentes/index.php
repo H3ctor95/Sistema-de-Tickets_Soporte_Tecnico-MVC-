@@ -1,26 +1,40 @@
+<?php
+$tituloPagina = 'Lista de agentes';
+include __DIR__ . '/../partials/head.php';
+?>
+
+<nav class="admin-subnav" aria-label="Panel admin">
+<a href="index.php?controller=admin&amp;action=dashboard">← Panel administrador</a>
+</nav>
+
 <h1>Agentes</h1>
+<p><a class="button" href="index.php?controller=agente&amp;action=crear">Nuevo agente</a></p>
 
-<a href="index.php?controller=agente&action=crear">Nuevo Agente</a>
-
-<table border="1">
-<tr>
+<div class="table-wrap">
+<table class="table-data">
+<thead><tr>
     <th>ID</th>
     <th>Nombre</th>
     <th>Email</th>
     <th>Acciones</th>
-</tr>
+</tr></thead>
+<tbody>
 
-<?php while($a = $agentes->fetch_object()): ?>
+<?php if ($agentes): while ($a = $agentes->fetch_object()): ?>
 <tr>
-    <td><?= $a->id ?></td>
-    <td><?= $a->nombre ?></td>
-    <td><?= $a->email ?></td>
-    <td>
-        <a href="index.php?controller=agente&action=editar&id=<?= $a->id ?>">Editar</a>
-        <a href="index.php?controller=agente&action=eliminar&id=<?= $a->id ?>">Eliminar</a>
-        <a href="index.php?controller=agente&action=tomar&id=<?= $t->id ?>">Tomar Ticket</a>
+    <td><?= (int) $a->id ?></td>
+    <td><?= htmlspecialchars($a->nombre) ?></td>
+    <td><?= htmlspecialchars($a->email) ?></td>
+    <td class="table-actions">
+        <a href="index.php?controller=agente&amp;action=editar&amp;id=<?= (int) $a->id ?>">Editar</a>
+        <a href="index.php?controller=agente&amp;action=eliminar&amp;id=<?= (int) $a->id ?>"
+           onclick="return confirm('¿Eliminar este agente?');">Eliminar</a>
     </td>
 </tr>
-<?php endwhile; ?>
+<?php endwhile; endif; ?>
 
+</tbody>
 </table>
+</div>
+
+<?php include __DIR__ . '/../partials/footer.php'; ?>

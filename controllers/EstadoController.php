@@ -1,7 +1,12 @@
 <?php
 require_once "models/EstadoModelo.php";
+require_once "config/auth.php";
 
 class EstadoController {
+
+    public function __construct() {
+        verificarRol(1);
+    }
 
     public function index() {
         $modelo = new EstadoModelo();

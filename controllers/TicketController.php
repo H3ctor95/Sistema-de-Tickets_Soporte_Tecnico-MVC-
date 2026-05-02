@@ -2,40 +2,73 @@
 require_once "models/TicketModelo.php";
 require_once "models/CategoriaModelo.php";
 require_once "models/EstadoModelo.php";
+require_once "models/PrioridadModelo.php";
 require_once "models/ComentarioModelo.php";
 require_once "config/auth.php";
 
-
 class TicketController {
 
+    public function __construct() {
+        if (!isset($_SESSION['usuario'])) {
+            header("Location: index.php");
+            exit;
+        }
+        if ((int) $_SESSION['usuario']->rol_id === 2) {
+            header("Location: index.php?controller=agente&action=tickets");
+            exit;
+        }
+    }
+
     public function index() {
+        verificarAlgunRol([1, 3]);
+
         $modelo = new TicketModelo();
-        $tickets = $modelo->obtenerTodos();
+        if ((int) $_SESSION['usuario']->rol_id === 3) {
+            $tickets = $modelo->obtenerPorUsuario($_SESSION['usuario']->id);
+        } else {
+            $tickets = $modelo->obtenerTodos();
+        }
 
         require "views/tickets/index.php";
     }
 
     public function crear() {
+        verificarAlgunRol([1, 3]);
 
         $catmodelo = new CategoriaModelo();
-        $estModelo = new EstadoModelo();
+        $prioridadModelo = new PrioridadModelo();
 
         $categorias = $catmodelo->obtenerTodas();
-        $estados = $estModelo->obtenerTodos();
+        $prioridades = $prioridadModelo->obtenerTodas();
 
         if ($_POST) {
             $modelo = new TicketModelo();
-            $modelo->crear($_POST);
+            $modelo->crear($_POST, $_SESSION['usuario']->id);
 
-            header("Location: index.php");
+            header("Location: index.php?controller=ticket&action=index");
+            exit;
         }
 
         require "views/tickets/crear.php";
     }
 
     public function editar() {
+        verificarAlgunRol([1, 3]);
+
+        $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
         $modelo = new TicketModelo();
-        
+
+        $ticket = $modelo->obtenerPorIdCompleto($id);
+        if (!$ticket || !usuario_puede_ver_ticket($ticket)) {
+            echo "Acceso denegado";
+            exit;
+        }
+        if ((int) $_SESSION['usuario']->rol_id === 3
+            && (int) $ticket->registrado_por_usuario_id !== (int) $_SESSION['usuario']->id) {
+            echo "Acceso denegado";
+            exit;
+        }
+
         $catModelo = new CategoriaModelo();
         $estModelo = new EstadoModelo();
 
@@ -43,60 +76,92 @@ class TicketController {
         $estados = $estModelo->obtenerTodos();
 
         if ($_POST) {
-            $modelo->actualizar($_GET['id'], $_POST);
-            header("Location: index.php");
+            $modelo->actualizar($id, $_POST);
+            header("Location: index.php?controller=ticket&action=index");
+            exit;
         }
 
-        $ticket = $modelo->obtenerPorId($_GET['id']);
         require "views/tickets/editar.php";
     }
 
     public function eliminar() {
-        $modelo = new TicketModelo();
-        $modelo->eliminar($_GET['id']);
+        verificarAlgunRol([1, 3]);
 
-        header("Location: index.php");
+        $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+        $modelo = new TicketModelo();
+        $ticket = $modelo->obtenerPorId($id);
+
+        if (!$ticket) {
+            header("Location: index.php?controller=ticket&action=index");
+            exit;
+        }
+        if ((int) $_SESSION['usuario']->rol_id === 3
+            && (int) $ticket->registrado_por_usuario_id !== (int) $_SESSION['usuario']->id) {
+            echo "Acceso denegado";
+            exit;
+        }
+
+        $modelo->eliminar($id);
+
+        header("Location: index.php?controller=ticket&action=index");
+        exit;
     }
 
     public function ver() {
+        verificarAlgunRol([1, 3]);
+
+        $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
         $modelo = new TicketModelo();
         $comentarioModelo = new ComentarioModelo();
-    
-        $ticket = $modelo->obtenerPorId($_GET['id']);
-        $comentarios = $comentarioModelo->obtenerPorTicket($_GET['id']);
-    
+
+        $ticket = $modelo->obtenerPorIdCompleto($id);
+        if (!$ticket || !usuario_puede_ver_ticket($ticket)) {
+            echo "Acceso denegado";
+            exit;
+        }
+
+        $comentarios = $comentarioModelo->obtenerPorTicket($id);
+
         require "views/tickets/ver.php";
     }
 
-    public function __construct() {
-        session_start();
-    
-        if (!isset($_SESSION['usuario'])) {
-            header("Location: index.php");
+    public function aprobar() {
+        verificarAlgunRol([3]);
+
+        $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+        $modelo = new TicketModelo();
+        $ticket = $modelo->obtenerPorId($id);
+
+        if (!$ticket
+            || (int) $ticket->registrado_por_usuario_id !== (int) $_SESSION['usuario']->id
+            || (int) $ticket->estado_id !== 3) {
+            echo "No se puede aprobar este ticket.";
             exit;
         }
-    
-        if ($_SESSION['usuario']->rol_id != 2) {
-            echo "Acceso solo para usuarios";
-            exit;
-        }
+
+        $modelo->cerrarYaprobar($id);
+
+        header("Location: index.php?controller=ticket&action=index");
+        exit;
     }
 
-    public function aprobar() {
-        $id = $_GET['id'];
-    
-        $db = Conexion::conectar();
-        $db->query("UPDATE tickets SET aprobado=1, estado_id=4 WHERE id=$id");
-    
-        header("Location: index.php?controller=ticket&action=index");
-    }
-    
     public function rechazar() {
-        $id = $_GET['id'];
-    
-        $db = Conexion::conectar();
-        $db->query("UPDATE tickets SET estado_id=2 WHERE id=$id");
-    
-        header("Location: index.php?controller=ticket&action=index");
+        verificarAlgunRol([3]);
+
+        $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+        $modelo = new TicketModelo();
+        $ticket = $modelo->obtenerPorId($id);
+
+        if (!$ticket
+            || (int) $ticket->registrado_por_usuario_id !== (int) $_SESSION['usuario']->id
+            || (int) $ticket->estado_id !== 3) {
+            echo "No se puede rechazar este ticket.";
+            exit;
+        }
+
+        $modelo->rechazarAprobacion($id);
+
+        header("Location: index.php?controller=ticket&action=ver&id=$id");
+        exit;
     }
 }

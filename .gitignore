@@ -1,3 +1,24 @@
-
+# Credenciales y entorno local (no subir)
 .env
+.env.local
+.env.*.local
+*.env.backup
 
+# Solo un ejemplo público debe versionarse: .env.example
+
+# Logs
+*.log
+
+# Composer (si lo usás después)
+/vendor/
+composer.phar
+
+# Basura del sistema / IDE
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+*~
+
+# Cachés de PHPUnit / PHPStan (si agregás pruebas)
+.phpunit.result.cache

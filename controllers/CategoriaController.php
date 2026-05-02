@@ -1,7 +1,12 @@
 <?php
 require_once "models/CategoriaModelo.php";
+require_once "config/auth.php";
 
 class CategoriaController {
+
+    public function __construct() {
+        verificarRol(1);
+    }
 
     public function index() {
         $modelo = new CategoriaModelo();
