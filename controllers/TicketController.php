@@ -3,6 +3,8 @@ require_once "models/TicketModelo.php";
 require_once "models/CategoriaModelo.php";
 require_once "models/EstadoModelo.php";
 require_once "models/ComentarioModelo.php";
+require_once "config/auth.php";
+
 
 class TicketController {
 
@@ -64,5 +66,19 @@ class TicketController {
         $comentarios = $comentarioModelo->obtenerPorTicket($_GET['id']);
     
         require "views/tickets/ver.php";
+    }
+
+    public function __construct() {
+        session_start();
+    
+        if (!isset($_SESSION['usuario'])) {
+            header("Location: index.php");
+            exit;
+        }
+    
+        if ($_SESSION['usuario']->rol_id != 2) {
+            echo "Acceso solo para usuarios";
+            exit;
+        }
     }
 }

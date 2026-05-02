@@ -56,4 +56,11 @@ class TicketModelo {
         $db = Conexion::conectar();
         return $db->query("DELETE FROM tickets WHERE id=$id");
     }
+
+    public function obtenerPorUsuario($usuario_id) {
+        $db = Conexion::conectar();
+    
+        return $db->query("SELECT * FROM tickets 
+                           WHERE registrado_por_usuario_id = $usuario_id");
+    }
 }

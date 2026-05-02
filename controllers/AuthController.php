@@ -18,7 +18,14 @@ class AuthController {
 
                 $_SESSION['usuario'] = $usuario;
 
-                header("Location: index.php");
+                 
+                if ($usuario->rol_id == 1){
+                    header("location: index.php?controller=admin&action=dashboard");
+                } elseif ($usuario->rol_id == 2){
+                    header("location: index.php?controller=ticket&action=index");
+                } elseif ($usuario->rol_id == 3) {
+                    header("location: index.php?controller=agente&action=index");
+                }
             } else {
                 echo "Credenciales incorrectas";
             }

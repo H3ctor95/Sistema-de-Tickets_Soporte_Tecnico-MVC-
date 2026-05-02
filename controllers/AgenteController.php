@@ -1,5 +1,6 @@
 <?php
 require_once "models/AgenteModelo.php";
+require_once "config/auth.php";
 
 class AgenteController {
 
@@ -40,4 +41,19 @@ class AgenteController {
 
         header("Location: index.php?controller=agente&action=index");
     }
+
+    public function __construct() {
+        session_start();
+    
+        if (!isset($_SESSION['usuario'])) {
+            header("Location: index.php");
+            exit;
+        }
+    
+        if ($_SESSION['usuario']->rol_id != 3) {
+            echo "Acceso solo para agentes";
+            exit;
+        }
+    }
+
 }

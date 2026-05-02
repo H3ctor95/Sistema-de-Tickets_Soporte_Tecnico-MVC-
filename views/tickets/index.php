@@ -27,3 +27,5 @@
 <?php endwhile; ?>
 
 </table>
+
+<a href="index.php?controller=auth&action=logout">Cerrar sesión</a>
