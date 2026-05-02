@@ -8,9 +8,6 @@ class TicketModelo {
         return db_tbl('tikets');
     }
 
-    /**
-     * Listado con quien creó el tiket y qué agente lo tiene asignado (si hay).
-     */
     public function obtenerTodos() {
         $db = Conexion::conectar();
         $tik = $this->tabla();

@@ -2,9 +2,6 @@
 require_once "config/conexion.php";
 require_once "config/tablas.php";
 
-/**
- * Tabla agentes enlazada a usuarios (login). Asignación de trabajo en ticket_asignaciones.
- */
 class AgenteModelo {
 
     public function obtenerIdPorUsuario($usuario_id) {
