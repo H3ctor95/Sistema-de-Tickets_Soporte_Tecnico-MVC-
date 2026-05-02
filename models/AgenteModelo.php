@@ -42,4 +42,20 @@ class AgenteModelo {
         $db = Conexion::conectar();
         return $db->query("DELETE FROM agentes WHERE id=$id");
     }
+
+    public function ticketsDisponibles(){
+        $db = Conexion::conectar();
+        
+        return $db->query("SELECT * FROM tickets WHERE asignado = 0 ORDER BY prioridad_id DESC");
+    }
+    
+    public function tomarTicket($ticket_id, $agente_id) {
+        $db = Conexion::conectar();
+    
+        $sql = "UPDATE tickets 
+                SET asignado = 1, agente_id = $agente_id, estado_id = 2 
+                WHERE id = $ticket_id";
+    
+        return $db->query($sql);
+    }
 }

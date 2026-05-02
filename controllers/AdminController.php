@@ -13,7 +13,6 @@ class AdminController {
             exit;
         }
 
-        // 🔒 SOLO ADMIN
         if ($_SESSION['usuario']->rol_id != 1) {
             echo "Acceso denegado";
             exit;

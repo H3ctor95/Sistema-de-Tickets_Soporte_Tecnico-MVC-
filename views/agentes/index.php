@@ -18,6 +18,7 @@
     <td>
         <a href="index.php?controller=agente&action=editar&id=<?= $a->id ?>">Editar</a>
         <a href="index.php?controller=agente&action=eliminar&id=<?= $a->id ?>">Eliminar</a>
+        <a href="index.php?controller=agente&action=tomar&id=<?= $t->id ?>">Tomar Ticket</a>
     </td>
 </tr>
 <?php endwhile; ?>

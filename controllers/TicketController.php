@@ -81,4 +81,22 @@ class TicketController {
             exit;
         }
     }
+
+    public function aprobar() {
+        $id = $_GET['id'];
+    
+        $db = Conexion::conectar();
+        $db->query("UPDATE tickets SET aprobado=1, estado_id=4 WHERE id=$id");
+    
+        header("Location: index.php?controller=ticket&action=index");
+    }
+    
+    public function rechazar() {
+        $id = $_GET['id'];
+    
+        $db = Conexion::conectar();
+        $db->query("UPDATE tickets SET estado_id=2 WHERE id=$id");
+    
+        header("Location: index.php?controller=ticket&action=index");
+    }
 }
